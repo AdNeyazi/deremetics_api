@@ -18,7 +18,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 gem "bcrypt", "~> 3.1.7"
-gem "jwt", "~> 2.9"
+gem "jwt", "~> 3.3"
 gem "rack-cors"
 gem "rack-attack"
 gem "json", "~> 2.9"
