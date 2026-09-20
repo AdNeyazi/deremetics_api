@@ -20,6 +20,7 @@ gem "jbuilder"
 gem "bcrypt", "~> 3.1.7"
 gem "jwt", "~> 2.9"
 gem "rack-cors"
+gem "rack-attack"
 gem "json", "~> 2.9"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

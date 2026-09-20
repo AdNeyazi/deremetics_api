@@ -2,8 +2,19 @@ class Product < ApplicationRecord
   include ApiJson
 
   self.primary_key = "id"
+  TIERS = %w[premium ultra].freeze
 
   before_validation :assign_id, on: :create
+
+  validates :tier, inclusion: { in: TIERS }
+  validates :name, presence: true, length: { maximum: 200 }
+  validates :description, length: { maximum: 5000 }
+  validates :tag, length: { maximum: 100 }
+  validates :price, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1_000_000 }
+  validates :image_url, length: { maximum: 2048 },
+                        format: { with: %r{\Ahttps?://\S+\z}i, message: "must be an http(s) URL" },
+                        allow_blank: true
+  validate :variants_limit
 
   def to_api
     {
@@ -51,6 +62,10 @@ class Product < ApplicationRecord
         "imageUrl" => (v["imageUrl"] || v[:imageUrl] || "").to_s
       }
     end
+  end
+
+  def variants_limit
+    errors.add(:variants, "has too many entries") if variants.is_a?(Array) && variants.size > 20
   end
 
   private

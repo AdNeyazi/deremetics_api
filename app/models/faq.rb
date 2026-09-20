@@ -5,6 +5,9 @@ class Faq < ApplicationRecord
 
   before_validation :assign_id, on: :create
 
+  validates :question, presence: true, length: { maximum: 500 }
+  validates :answer, length: { maximum: 5000 }
+
   def to_api
     {
       id: id,

@@ -1,7 +1,18 @@
 class JwtToken
+  MIN_SECRET_LENGTH = 32
+
   class << self
     def secret
-      ENV.fetch("JWT_SECRET", "dev-secret-change-me")
+      @secret ||= begin
+        value = ENV["JWT_SECRET"].to_s
+
+        if Rails.env.production?
+          raise "JWT_SECRET is not set" if value.blank?
+          raise "JWT_SECRET must be at least #{MIN_SECRET_LENGTH} characters" if value.length < MIN_SECRET_LENGTH
+        end
+
+        value.presence || "dev-secret-change-me" # fallback only outside production
+      end
     end
 
     def encode(user)
@@ -17,6 +28,8 @@ class JwtToken
     end
 
     def decode(token)
+      return nil if token.blank?
+
       payload, = JWT.decode(token, secret, true, algorithm: "HS256")
       payload
     rescue JWT::DecodeError

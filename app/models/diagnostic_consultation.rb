@@ -6,6 +6,25 @@ class DiagnosticConsultation < ApplicationRecord
   before_validation :assign_id, on: :create
   before_validation :set_created_at, on: :create
 
+  validates :full_name, presence: true, length: { maximum: 100 }
+  validates :phone, presence: true, format: { with: /\A[0-9+\-\s()]{7,20}\z/, message: "is not a valid phone number" }
+  validates :email, length: { maximum: 254 },
+                    format: { with: URI::MailTo::EMAIL_REGEXP, message: "is not a valid email" },
+                    allow_blank: true
+  validates :address, length: { maximum: 500 }
+  validates :blood_group, inclusion: { in: %w[A+ A- B+ B- AB+ AB- O+ O-] }, allow_blank: true
+  validates :allergies, length: { maximum: 1000 }
+  validates :current_routine, length: { maximum: 2000 }
+  validates :status, length: { maximum: 50 }
+  validate :file_id_lists_limit
+
+  def file_id_lists_limit
+    [ :report_file_ids, :face_photo_file_ids ].each do |attr|
+      list = self[attr]
+      errors.add(attr, "has too many files") if list.is_a?(Array) && list.size > 10
+    end
+  end
+
   def to_api
     {
       id: id,
