@@ -22,6 +22,9 @@ gem "jwt", "~> 2.9"
 gem "rack-cors"
 gem "rack-attack"
 gem "json", "~> 2.9"
+gem "ahoy_matey"
+gem "geocoder"
+gem "maxminddb"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]

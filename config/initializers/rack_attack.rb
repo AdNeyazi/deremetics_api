@@ -49,7 +49,8 @@ class Rack::Attack
   end
 
   throttle("analytics/ip", limit: 120, period: 1.minute) do |req|
-    CLIENT_IP.call(req) if req.post? && PATH.call(req) == "/api/analytics/event"
+    path = PATH.call(req)
+    CLIENT_IP.call(req) if req.post? && %w[/api/analytics/event /api/track/visit /api/track/event].include?(path)
   end
 
   # --- Overall safety net for everything under /api ---

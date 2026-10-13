@@ -18,6 +18,8 @@ Rails.application.routes.draw do
     get "packages", to: "packages#index"
 
     post "consultation", to: "consultations#create"
+    post "track/visit", to: "tracking#visit"
+    post "track/event", to: "tracking#event"
     post "analytics/event", to: "analytics_events#create"
     post "upload/chunk", to: "uploads#chunk"
     post "upload/complete", to: "uploads#complete"

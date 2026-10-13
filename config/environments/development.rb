@@ -12,6 +12,11 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  if ENV["DEV_SIMULATE_CLIENT_IP"].present?
+    require Rails.root.join("lib/middleware/dev_simulate_client_ip")
+    config.middleware.insert_before ActionDispatch::RemoteIp, DevSimulateClientIp
+  end
+
   # Enable server timing.
   config.server_timing = true
 
@@ -52,8 +57,8 @@ Rails.application.configure do
   # Append comments with runtime information tags to SQL queries in logs.
   config.active_record.query_log_tags_enabled = true
 
-  # Highlight code that enqueued background job in logs.
-  config.active_job.verbose_enqueue_logs = true
+  # Run geocode jobs immediately in dev so visit country/city appear without a worker.
+  config.active_job.queue_adapter = :inline
 
   # Highlight code that triggered redirect in logs.
   config.action_dispatch.verbose_redirect_logs = true

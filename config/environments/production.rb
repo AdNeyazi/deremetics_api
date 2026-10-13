@@ -84,4 +84,8 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Kamal / nginx terminate TLS and set X-Forwarded-For. Trust the proxy so
+  # request.remote_ip (and Ahoy geocoding) reflect the visitor, not the edge.
+  config.action_dispatch.trusted_proxies = ActionDispatch::RemoteIp::TRUSTED_PROXIES
 end
