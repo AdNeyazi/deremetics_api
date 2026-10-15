@@ -3,7 +3,7 @@ default: &default
   encoding: unicode
   host: <%= ENV.fetch("PGHOST", "127.0.0.1") %>
   port: <%= ENV.fetch("PGPORT", 5432) %>
-  username: <%= ENV.fetch("PGUSER", "dermetics") %>
+  username: <%= ENV.fetch("PGUSER", "postgres") %>
   password: 1234
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
 

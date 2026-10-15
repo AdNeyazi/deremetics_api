@@ -13,6 +13,13 @@ Rails.application.routes.draw do
     get "categories", to: "categories#index"
     get "content", to: "content#show"
     get "products", to: "products#index"
+    get "products/:id", to: "products#show"
+    post "products/:product_id/reviews", to: "product_reviews#create"
+    post "delivery/check", to: "delivery#check"
+    post "coupons/validate", to: "coupons#validate"
+    post "orders", to: "orders#create"
+    get "orders", to: "orders#index"
+    get "orders/:id", to: "orders#show"
     get "team", to: "team#index"
     get "faqs", to: "faqs#index"
     get "packages", to: "packages#index"
@@ -27,6 +34,9 @@ Rails.application.routes.draw do
       post "products", to: "products#create"
       put "products/:id", to: "products#update"
       delete "products/:id", to: "products#destroy"
+
+      get "product-reviews", to: "product_reviews#index"
+      put "product-reviews/:id", to: "product_reviews#update"
 
       put "categories/:id", to: "categories#update"
       put "content", to: "content#update"

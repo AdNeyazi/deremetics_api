@@ -34,7 +34,7 @@ class AnalyticsOverview
     end
 
     prod_counts = Hash.new(0)
-    events.select { |e| %w[product_view inquiry].include?(e.event_type) }.each do |e|
+    events.select { |e| %w[product_view pdp_view inquiry].include?(e.event_type) }.each do |e|
       name = e.metadata.is_a?(Hash) ? (e.metadata["name"] || e.metadata[:name]) : nil
       prod_counts[name] += 1 if name.present?
     end
@@ -48,9 +48,12 @@ class AnalyticsOverview
     end
     tier_interest = tier_counts.map { |tier, count| { tier: tier, count: count } }
 
+    product_view_events = events.select { |e| %w[product_view pdp_view].include?(e.event_type) }
     funnel = {
       visits: page_views.size,
-      productViews: events.count { |e| e.event_type == "product_view" },
+      productViews: product_view_events.size,
+      addToCart: events.count { |e| e.event_type == "add_to_cart" },
+      checkouts: events.count { |e| e.event_type == "checkout_complete" },
       inquiries: inquiries
     }
 
