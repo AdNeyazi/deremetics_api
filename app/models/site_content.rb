@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SiteContent < ApplicationRecord
   include ApiJson
 
@@ -20,7 +22,19 @@ class SiteContent < ApplicationRecord
       feedbackText: feedback_text,
       footerHeading: footer_heading,
       footerText: footer_text,
-      phone: phone
+      phone: phone,
+      marqueeLines: Array(respond_to?(:marquee_lines) ? marquee_lines : []).map(&:to_s).reject(&:blank?),
+      whatsappNumber: respond_to?(:whatsapp_number) ? whatsapp_number.to_s : "",
+      guaranteeDays: guarantee_days_value,
+      trustLine: {
+        complimentaryGift: trust_complimentary_gift?,
+        freeShipping: trust_free_shipping?,
+        cod: trust_cod?
+      },
+      brandTrust: {
+        headline: respond_to?(:brand_trust_headline) ? brand_trust_headline.to_s : "",
+        promise: respond_to?(:brand_trust_promise) ? brand_trust_promise.to_s : ""
+      }
     }
   end
 
@@ -40,5 +54,44 @@ class SiteContent < ApplicationRecord
     self.footer_heading = attrs["footerHeading"] if attrs.key?("footerHeading")
     self.footer_text = attrs["footerText"] if attrs.key?("footerText")
     self.phone = attrs["phone"] if attrs.key?("phone")
+    if attrs.key?("marqueeLines") && respond_to?(:marquee_lines=)
+      self.marquee_lines = Array(attrs["marqueeLines"]).map(&:to_s).reject(&:blank?)
+    end
+    if attrs.key?("whatsappNumber") && respond_to?(:whatsapp_number=)
+      self.whatsapp_number = attrs["whatsappNumber"].to_s
+    end
+    if attrs.key?("guaranteeDays") && respond_to?(:guarantee_days=)
+      self.guarantee_days = attrs["guaranteeDays"].to_i.clamp(1, 365)
+    end
+    if attrs.key?("trustLine") && attrs["trustLine"].is_a?(Hash)
+      tl = attrs["trustLine"]
+      self.trust_complimentary_gift = !!tl["complimentaryGift"] if tl.key?("complimentaryGift")
+      self.trust_free_shipping = !!tl["freeShipping"] if tl.key?("freeShipping")
+      self.trust_cod = !!tl["cod"] if tl.key?("cod")
+    end
+    if attrs.key?("brandTrust") && attrs["brandTrust"].is_a?(Hash)
+      bt = attrs["brandTrust"]
+      self.brand_trust_headline = bt["headline"].to_s if bt.key?("headline")
+      self.brand_trust_promise = bt["promise"].to_s if bt.key?("promise")
+    end
+  end
+
+  def guarantee_days_value
+    return 45 unless respond_to?(:guarantee_days)
+
+    days = guarantee_days.to_i
+    days.positive? ? days : 45
+  end
+
+  def trust_complimentary_gift?
+    respond_to?(:trust_complimentary_gift) ? trust_complimentary_gift : true
+  end
+
+  def trust_free_shipping?
+    respond_to?(:trust_free_shipping) ? trust_free_shipping : true
+  end
+
+  def trust_cod?
+    respond_to?(:trust_cod) ? trust_cod : true
   end
 end

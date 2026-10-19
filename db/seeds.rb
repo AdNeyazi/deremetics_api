@@ -50,6 +50,153 @@ unless Product.exists?(name: "Solar Veil Mineral Fluid")
   )
 end
 
+# Full PDP demo content for premium hero SKU (DERMATICS placeholders — admin-editable)
+solar = Product.find_by(name: "Solar Veil Mineral Fluid")
+if solar
+  img = solar.image_url
+  related = Product.where(tier: "premium").where.not(id: solar.id).limit(3).pluck(:id)
+  solar.update!(
+    compare_at_price: 1499,
+    variants: [
+      { "label" => "SPF 30 · 50 ml", "price" => 999, "mrp" => 1199, "imageUrl" => "", "inStock" => true },
+      { "label" => "SPF 50 · 50 ml", "price" => 1175, "mrp" => 1499, "imageUrl" => "", "inStock" => true },
+      { "label" => "SPF 50+ PA++++ · 50 ml", "price" => 1299, "mrp" => 1599, "imageUrl" => "", "inStock" => true }
+    ],
+    pdp: {
+      "highlightLine" => "[PLACEHOLDER] Replace with your highlight badge text in admin",
+      "badge" => "",
+      "dermatologicallyTested" => false,
+      "subtitle" => "SPF 50 PA++++ · Very high sun protection · Tested for Indian skin · 50 ml",
+      "currency" => "INR",
+      "taxInclusive" => true,
+      "media" => [
+        { "type" => "image", "url" => img, "order" => 0 },
+        { "type" => "image", "url" => "https://images.unsplash.com/photo-1556228720-195a672e8a03?crop=entropy&cs=srgb&fm=jpg&q=85", "order" => 1 },
+        { "type" => "image", "url" => "https://images.unsplash.com/photo-1570194065650-d99fb4b38b17?crop=entropy&cs=srgb&fm=jpg&q=85", "order" => 2 }
+      ],
+      "formulatedFor" => [
+        { "label" => "Photo-ageing protection" },
+        { "label" => "Sensitive skin" },
+        { "label" => "Oily & combination skin" },
+        { "label" => "Dry & normal skin" },
+        { "label" => "Acne-prone skin" },
+        { "label" => "Water & sweat resistant up to 80 mins" }
+      ],
+      "freeFrom" => [
+        { "label" => "No silicones" },
+        { "label" => "No mineral oils" },
+        { "label" => "No drying alcohol" },
+        { "label" => "No fragrance" },
+        { "label" => "Non-comedogenic" },
+        { "label" => "Dermatologically tested" }
+      ],
+      "proTips" => [
+        { "label" => "Apply as the final AM step, 15 minutes before sun" },
+        { "label" => "Reapply every 2 hours for maximum protection" },
+        { "label" => "UV damage happens on cloudy days too" },
+        { "label" => "Wear indoors — UVA penetrates windows" }
+      ],
+      "trust" => { "freeShipping" => true, "cod" => true, "gift" => true },
+      "guarantee" => {
+        "title" => "100% Money Back Guarantee within 45 days",
+        "body" => "[PLACEHOLDER] Your skin needs time — not shortcuts.\n\nFollow your DERMATICS ritual consistently for 45 days. After completing your journey, if you don’t love your results, you have 15 more days to claim your money back.\n\nReal change deserves real time."
+      },
+      "stats" => [],
+      "blendMarquee" => {
+        "title" => "[PLACEHOLDER] Your signature technology name",
+        "descriptors" => ["Descriptor one", "Descriptor two", "Descriptor three"]
+      },
+      "heroBanner" => {
+        "sectionHeading" => "[PLACEHOLDER] Section heading — replace in admin",
+        "headline" => "[PLACEHOLDER] High-performance daily UV defence",
+        "lines" => [
+          "Sun contributes significantly to visible ageing",
+          "Mineral + supportive actives for barrier comfort",
+          "Built for Indian climate and skin tones"
+        ],
+        "desktopImage" => "https://images.unsplash.com/photo-1556228578-8c89e6adf883?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "mobileImage" => "https://images.unsplash.com/photo-1556228578-8c89e6adf883?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      "story" => {
+        "image" => img,
+        "title" => "Story behind the formula",
+        "body" => "[PLACEHOLDER — admin editable]\n\nDERMATICS Solar Veil was developed in our formulation lab for daily wear in Indian light and humidity. Protection is what allows skin to keep moving forward without carrying unnecessary damage into the next day.\n\nReplace this story with your brand narrative, patents, and science notes from the dashboard."
+      },
+      "benefitBanners" => [
+        {
+          "desktopImage" => "https://images.unsplash.com/photo-1556228720-195a672e8a03?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "mobileImage" => "https://images.unsplash.com/photo-1556228720-195a672e8a03?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "alt" => "Lightweight invisible finish — placeholder",
+          "order" => 0
+        }
+      ],
+      "ingredients" => [
+        { "name" => "Zinc Oxide", "role" => "Broad-spectrum mineral UV filter", "description" => "[PLACEHOLDER] Helps shield against UVA/UVB while remaining elegant on skin.", "imageUrl" => "", "researchUrl" => "" },
+        { "name" => "Titanium Dioxide", "role" => "Photostable UVB defence", "description" => "[PLACEHOLDER] Complements mineral protection with photostable performance.", "imageUrl" => "", "researchUrl" => "" },
+        { "name" => "Niacinamide", "role" => "Barrier support & tone clarity", "description" => "[PLACEHOLDER] Supports barrier comfort for daily wear.", "imageUrl" => "", "researchUrl" => "" },
+        { "name" => "Ectoin", "role" => "Environmental stress shield", "description" => "[PLACEHOLDER] Helps skin cope with environmental stressors.", "imageUrl" => "", "researchUrl" => "" }
+      ],
+      "inciText" => "[PLACEHOLDER INCI — replace in admin]\nAqua, Zinc Oxide, Titanium Dioxide, Caprylic/Capric Triglyceride, Niacinamide, Ectoin, Glycerin, …",
+      "infoTabs" => {
+        "overview" => "An ultra-lightweight mineral fluid designed for daily broad-spectrum protection. Fast-absorbing finish with no white cast — comfortable under makeup and built for Indian skin and climate.\n\n[PLACEHOLDER] Expand with DERMATICS science claims from admin.",
+        "applicationProtocol" => "AM: Cleanse → serum → moisturiser → Solar Veil.\nSpread evenly over face, neck and ears. Reapply every 2 hours, or after swimming, sweating or towel drying.",
+        "moreDetails" => "Net content: 50 ml (varies by variant).\nStore in a cool, dry place away from sunlight.\nFor external use only. Patch test recommended. Avoid contact with eyes.\n\n[PLACEHOLDER] Add manufacturer / marketer details in admin."
+      },
+      "faqs" => [
+        {
+          "question" => "What makes this different from a regular sunscreen?",
+          "answer" => "Solar Veil pairs mineral UV filters with barrier-supporting actives so daily sun defence also supports skin comfort and longevity — not just burn prevention. [PLACEHOLDER — edit in admin]",
+          "order" => 0
+        },
+        {
+          "question" => "Can I use this under makeup?",
+          "answer" => "Yes. The lightweight, fast-absorbing texture layers comfortably under makeup. Allow it to settle for a minute before foundation.",
+          "order" => 1
+        },
+        {
+          "question" => "Do I need sunscreen indoors?",
+          "answer" => "UVA can pass through windows. Daily use helps protect against cumulative exposure from commuting and time near windows.",
+          "order" => 2
+        }
+      ],
+      "eligibleCoupons" => [
+        { "code" => "DERMA10", "label" => "DERMA10 — 10% off (demo)" },
+        { "code" => "WELCOME5", "label" => "WELCOME5 — welcome offer (demo)" }
+      ],
+      "relatedProductIds" => related,
+      "bundleItems" => related.first(1).map { |id| { "productId" => id, "variantLabel" => "" } },
+      "seo" => {
+        "title" => "Solar Veil Mineral Fluid SPF 50 · DERMATICS",
+        "description" => "Replace with your product meta description in admin.",
+        "ogImage" => img
+      }
+    }
+  )
+end
+
+Product.find_each { |p| p.save! if p.slug.blank? }
+
+site = SiteContent.find_by(key: "site")
+if site
+  updates = {}
+  if Array(site.marquee_lines).blank?
+    updates[:marquee_lines] = [
+      "Welcome to DERMATICS",
+      "Your skin, your formulation",
+      "Haute couture dermatology"
+    ]
+  end
+  updates[:whatsapp_number] = "919876543210" if site.whatsapp_number.blank?
+  if site.respond_to?(:guarantee_days) && site.guarantee_days.to_i <= 0
+    updates[:guarantee_days] = 45
+  end
+  if site.respond_to?(:brand_trust_headline) && site.brand_trust_headline.blank?
+    updates[:brand_trust_headline] = "Dermatologist trusted"
+    updates[:brand_trust_promise] = "Replace with your one-line brand promise in Website Content."
+  end
+  site.update!(updates) if updates.any?
+end
+
 if TeamMember.none?
   [
     { order: 1, name: "Aarav Mehta", role: "Founder", bio: "Visionary behind DERMATICS, redefining luxury skincare through science, craft and deep personalisation.", image_url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&q=85" },
@@ -96,7 +243,15 @@ unless SiteContent.exists?(key: "site")
     feedback_text: "Aapki skin ki journey humari zimmedari hai. Agar aapko apni formulation perfect na lage, toh hum aapki feedback lekar use baar-baar refine karenge — bina kisi extra cost ke. Kyunki perfection ek destination nahi, ek continuous feedback loop hai, aur hum tab tak nahi rukte jab tak aapki skin bilkul perfect na ho jaaye.",
     footer_heading: "Ready For Your Bespoke Formulation?",
     footer_text: "Speak with our concierge and begin a skincare ritual designed entirely around you.",
-    phone: "+91 98765 43210"
+    phone: "+91 98765 43210",
+    marquee_lines: ["Welcome to DERMATICS", "Your skin, your formulation", "Haute couture dermatology"],
+    whatsapp_number: "919876543210",
+    guarantee_days: 45,
+    trust_complimentary_gift: true,
+    trust_free_shipping: true,
+    trust_cod: true,
+    brand_trust_headline: "Dermatologist trusted",
+    brand_trust_promise: "Replace with your one-line brand promise in Website Content."
   )
 end
 
@@ -114,7 +269,17 @@ unless User.exists?(email: admin_email)
     email: admin_email,
     name: "Admin",
     role: "admin",
-    password: ENV.fetch("ADMIN_PASSWORD", "admin123"),
+    password: ENV.fetch("ADMIN_PASSWORD", "AdminPass123!"),
+    active: true
+  )
+end
+
+unless Coupon.exists?(code: "DERMA10")
+  Coupon.create!(
+    code: "DERMA10",
+    label: "10% off your ritual",
+    discount_type: "percent",
+    discount_value: 10,
     active: true
   )
 end
