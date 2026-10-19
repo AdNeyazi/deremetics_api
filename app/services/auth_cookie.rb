@@ -11,27 +11,33 @@ class AuthCookie
     end
 
     def cookie_options
-      base = if Rails.env.development?
-        {
-          value: "",
-          httponly: true,
-          secure: false,
-          same_site: :lax,
-          path: "/",
-          max_age: 7.days.to_i
-        }
+      domain = ENV["COOKIE_DOMAIN"].presence
+
+      same_site = if ENV["COOKIE_SAME_SITE"].present?
+        ENV["COOKIE_SAME_SITE"].to_s.downcase.to_sym
+      elsif Rails.env.development? || domain.present?
+        :lax
       else
-        {
-          value: "",
-          httponly: true,
-          secure: true,
-          same_site: :none,
-          path: "/",
-          max_age: 7.days.to_i
-        }
+        # :lax is recommended for single-domain / reverse-proxied production deployments.
+        # Set COOKIE_SAME_SITE=none in .env only when UI and API are on completely different root domains.
+        :lax
       end
 
-      domain = ENV["COOKIE_DOMAIN"].presence
+      secure = if ENV.key?("COOKIE_SECURE")
+        ENV["COOKIE_SECURE"].to_s.downcase == "true"
+      else
+        !Rails.env.development? && !Rails.env.test?
+      end
+
+      base = {
+        value: "",
+        httponly: true,
+        secure: secure,
+        same_site: same_site,
+        path: "/",
+        max_age: 7.days.to_i
+      }
+
       base[:domain] = domain if domain
       base
     end

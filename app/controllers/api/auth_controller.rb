@@ -18,8 +18,8 @@ module Api
         active: true
       )
       record_event("signup", "/signup", body["session_id"], user.id)
-      set_auth_cookie(response, user)
-      render json: { user: user.to_api }
+      token = set_auth_cookie(response, user)
+      render json: { user: user.to_api, token: token }
     end
 
     def login
@@ -34,8 +34,8 @@ module Api
       end
 
       record_event("login", "/login", body["session_id"], user.id)
-      set_auth_cookie(response, user)
-      render json: { user: user.to_api }
+      token = set_auth_cookie(response, user)
+      render json: { user: user.to_api, token: token }
     end
 
     def logout

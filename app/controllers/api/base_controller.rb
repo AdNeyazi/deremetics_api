@@ -14,7 +14,8 @@ module Api
     def current_auth
       return @current_auth if defined?(@current_auth)
 
-      payload = JwtToken.decode(cookies[AuthCookie::NAME])
+      token = cookies[AuthCookie::NAME].presence || bearer_token
+      payload = JwtToken.decode(token)
       user = payload && User.find_by(id: payload["sub"])
 
       # Role and active status come from the database, not from the token.
@@ -70,8 +71,13 @@ module Api
     end
 
     def allowed_origins
-      @allowed_origins ||= ENV.fetch("FRONTEND_ORIGIN", "http://localhost:3000")
-                              .split(",").map { |o| o.strip.chomp("/") }
+      @allowed_origins ||= begin
+        raw = ENV["FRONTEND_ORIGIN"]
+        if Rails.env.production? && raw.blank?
+          Rails.logger.warn("[SECURITY WARNING] FRONTEND_ORIGIN is not set in production. Defaulting to http://localhost:3000")
+        end
+        (raw.presence || "http://localhost:3000").split(",").map { |o| o.strip.chomp("/") }
+      end
     end
 
     def not_found
@@ -94,8 +100,17 @@ module Api
       render json: { error: "Already exists" }, status: :conflict
     end
 
+    def bearer_token
+      header = request.headers["Authorization"].to_s
+      return nil unless header.start_with?("Bearer ")
+
+      header.split(" ", 2).last.strip.presence
+    end
+
     def set_auth_cookie(response, user)
-      AuthCookie.set(response, JwtToken.encode(user))
+      token = JwtToken.encode(user)
+      AuthCookie.set(response, token)
+      token
     end
 
     def clear_auth_cookie(response)
