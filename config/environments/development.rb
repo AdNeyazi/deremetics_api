@@ -7,7 +7,6 @@ Rails.application.configure do
   config.enable_reloading = true
   config.hosts << "derma.crystalclearcraft.com"
   config.hosts << "dermetics.vercel.app"
-  config.hosts << "dermatics.vercel.app"
   config.hosts << /.*\.vercel\.app\z/
   # Do not eager load code on boot.
   config.eager_load = false

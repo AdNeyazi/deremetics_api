@@ -56,9 +56,18 @@ module Api
 
       origin = request.headers["Origin"].presence
       return if origin.nil?
-      return if allowed_origins.include?(origin)
+      return if origin_allowed?(origin)
 
+      Rails.logger.warn("[SECURITY] Forbidden origin: #{origin.inspect}. Allowed: #{allowed_origins.inspect}")
       render json: { error: "Forbidden origin" }, status: :forbidden
+    end
+
+    def origin_allowed?(origin)
+      return true if allowed_origins.include?(origin)
+      return true if origin.match?(%r{\Ahttps://[a-zA-Z0-9-]+\.vercel\.app\z})
+      return true if origin == "https://derma.crystalclearcraft.com"
+
+      false
     end
 
     # A plain HTML form cannot send JSON, so a body that is not JSON is refused.
