@@ -73,10 +73,8 @@ module Api
     def allowed_origins
       @allowed_origins ||= begin
         raw = ENV["FRONTEND_ORIGIN"]
-        if Rails.env.production? && raw.blank?
-          Rails.logger.warn("[SECURITY WARNING] FRONTEND_ORIGIN is not set in production. Defaulting to http://localhost:3000")
-        end
-        (raw.presence || "http://localhost:3000").split(",").map { |o| o.strip.chomp("/") }
+        default = "http://localhost:3000,https://dermetics.vercel.app,https://dermatics.vercel.app"
+        (raw.presence || default).split(",").map { |o| o.strip.chomp("/") }
       end
     end
 

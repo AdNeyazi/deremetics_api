@@ -19,7 +19,19 @@ module DermeticsApi
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use Rack::Attack
-    # Configuration for the application, engines, and railties goes here.
+
+    # Allow Vercel frontend, production domains, and preview subdomains
+    config.hosts << "dermetics.vercel.app"
+    config.hosts << "dermatics.vercel.app"
+    config.hosts << "derma.crystalclearcraft.com"
+    config.hosts << /.*\.vercel\.app\z/
+    config.hosts << /.*\.crystalclearcraft\.com\z/
+
+    if ENV["ALLOWED_HOSTS"].present?
+      ENV["ALLOWED_HOSTS"].split(",").map(&:strip).reject(&:blank?).each do |h|
+        config.hosts << h
+      end
+    end
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
