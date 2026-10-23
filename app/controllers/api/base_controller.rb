@@ -66,6 +66,7 @@ module Api
       return true if allowed_origins.include?(origin)
       return true if origin.match?(%r{\Ahttps://[a-zA-Z0-9-]+\.vercel\.app\z})
       return true if origin == "https://derma.crystalclearcraft.com"
+      return true if Rails.env.development? && origin.start_with?("http://localhost", "http://127.0.0.1")
 
       false
     end
@@ -82,8 +83,16 @@ module Api
     def allowed_origins
       @allowed_origins ||= begin
         raw = ENV["FRONTEND_ORIGIN"]
-        default = "http://localhost:3000,https://dermetics.vercel.app,https://dermatics.vercel.app"
-        (raw.presence || default).split(",").map { |o| o.strip.chomp("/") }
+        default = "https://dermetics.vercel.app,http://localhost:3000"
+        (raw.presence || default).split(",").map do |entry|
+          uri = URI.parse(entry.to_s.strip) rescue nil
+          if uri && uri.scheme && uri.host
+            port_part = (uri.port && ![80, 443].include?(uri.port)) ? ":#{uri.port}" : ""
+            "#{uri.scheme}://#{uri.host}#{port_part}"
+          else
+            entry.to_s.strip.chomp("/")
+          end
+        end
       end
     end
 
