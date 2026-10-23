@@ -80,8 +80,16 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks when configured.
+  config.hosts << "derma.crystalclearcraft.com"
+  config.hosts << "dermetics.vercel.app"
+  config.hosts << "dermatics.vercel.app"
+  config.hosts << /.*\.vercel\.app\z/
+  config.hosts << /.*\.crystalclearcraft\.com\z/
+
   if ENV["ALLOWED_HOSTS"].present?
-    config.hosts = ENV["ALLOWED_HOSTS"].split(",").map(&:strip).reject(&:blank?)
+    ENV["ALLOWED_HOSTS"].split(",").map(&:strip).reject(&:blank?).each do |h|
+      config.hosts << h
+    end
   end
   #
   # Skip DNS rebinding protection for the default health check endpoint.

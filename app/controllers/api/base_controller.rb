@@ -56,9 +56,19 @@ module Api
 
       origin = request.headers["Origin"].presence
       return if origin.nil?
-      return if allowed_origins.include?(origin)
+      return if origin_allowed?(origin)
 
+      Rails.logger.warn("[SECURITY] Forbidden origin: #{origin.inspect}. Allowed: #{allowed_origins.inspect}")
       render json: { error: "Forbidden origin" }, status: :forbidden
+    end
+
+    def origin_allowed?(origin)
+      return true if allowed_origins.include?(origin)
+      return true if origin.match?(%r{\Ahttps://[a-zA-Z0-9-]+\.vercel\.app\z})
+      return true if origin == "https://derma.crystalclearcraft.com"
+      return true if Rails.env.development? && origin.start_with?("http://localhost", "http://127.0.0.1")
+
+      false
     end
 
     # A plain HTML form cannot send JSON, so a body that is not JSON is refused.
@@ -73,10 +83,16 @@ module Api
     def allowed_origins
       @allowed_origins ||= begin
         raw = ENV["FRONTEND_ORIGIN"]
-        if Rails.env.production? && raw.blank?
-          Rails.logger.warn("[SECURITY WARNING] FRONTEND_ORIGIN is not set in production. Defaulting to http://localhost:3000")
+        default = "https://dermetics.vercel.app,http://localhost:3000"
+        (raw.presence || default).split(",").map do |entry|
+          uri = URI.parse(entry.to_s.strip) rescue nil
+          if uri && uri.scheme && uri.host
+            port_part = (uri.port && ![80, 443].include?(uri.port)) ? ":#{uri.port}" : ""
+            "#{uri.scheme}://#{uri.host}#{port_part}"
+          else
+            entry.to_s.strip.chomp("/")
+          end
         end
-        (raw.presence || "http://localhost:3000").split(",").map { |o| o.strip.chomp("/") }
       end
     end
 
